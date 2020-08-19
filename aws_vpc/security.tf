@@ -1,7 +1,7 @@
 # Create the Security Group
-resource "aws_security_group" "lxSgSsh" {
+resource "aws_security_group" "sgSSH" {
   vpc_id       = aws_vpc.SysOpsVPC.id
-  name         = "lxSgSsh"
+  name         = "sgSSH"
   description  = "SSH Security Group"
   
   # allow ingress of port 22
