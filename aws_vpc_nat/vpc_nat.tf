@@ -88,6 +88,21 @@ resource "aws_internet_gateway" "IGW" {
   }
 }
 
+# Resource: NAT Gateway -----------------------------
+resource "aws_eip" "nat_gateway" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "NGW" {
+  allocation_id = aws_eip.nat_gateway.id
+  subnet_id     = aws_subnet.DMZpublic2.id
+
+  tags = {
+    Name = "NGW"
+  }
+}
+#-- NAT Gateway (Optional) ----------------------------
+
 # Resource: Public Route Table #-----------------------
 resource "aws_route_table" "PublicRT" {
   vpc_id = aws_vpc.SysOpsVPC.id
@@ -103,7 +118,10 @@ route {
 # Resource: Private Route Table #-----------------------
 resource "aws_route_table" "PrivateRT" {
   vpc_id = aws_vpc.SysOpsVPC.id
-
+route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_nat_gateway.NGW.id
+  }
   tags = {
     Name = "PrivateRT"
   }
