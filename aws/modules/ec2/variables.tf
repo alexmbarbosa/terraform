@@ -17,7 +17,7 @@ variable "public_key" {
 //EC2 Instance --------------------------------------------------
 variable "instance_count" {
   description = "Total instances to be created."
-  default     = 2
+  default     = 1
 }
 
 variable "use_num_suffix" {
@@ -27,12 +27,12 @@ variable "use_num_suffix" {
 
 variable "num_suffix_format" {
   description = "Numerical suffix format used as the volume and EC2 instance name suffix"
-  default     = "-%2d"
+  default     = "%1d"
 }
 
 variable "name" {
   description = "Name to be used on all EC2 Instances as prefix"
-  default     = "aws_lab"
+  default     = "awslab"
 }
 
 variable "ami" {

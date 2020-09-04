@@ -1,18 +1,18 @@
 # Resource: VPC #-----------------------------------
-resource "aws_vpc" "opsVpc" {
+resource "aws_vpc" "MyVPC" {
   cidr_block       = var.vpc_cidr
   instance_tenancy = "default"
   enable_dns_hostnames = true
   enable_dns_support = true
 
   tags = {
-    Name = "opsVpc"
+    Name = "MyVPC"
   }
 }
 
 # Resource: Public Subnets #-------------------------
 resource "aws_subnet" "public1" {
-  vpc_id     = aws_vpc.opsVpc.id
+  vpc_id     = aws_vpc.MyVPC.id
   cidr_block = var.public1
   availability_zone = "us-east-1a"
   map_public_ip_on_launch = true
@@ -23,7 +23,7 @@ resource "aws_subnet" "public1" {
 }
 
 resource "aws_subnet" "public2" {
-  vpc_id     = aws_vpc.opsVpc.id
+  vpc_id     = aws_vpc.MyVPC.id
   cidr_block = var.public2
   availability_zone = "us-east-1b"
   map_public_ip_on_launch = true
@@ -35,7 +35,7 @@ resource "aws_subnet" "public2" {
 
 # Resource: Private App Subnets #----------------------
 resource "aws_subnet" "privateApp1" {
-  vpc_id     = aws_vpc.opsVpc.id
+  vpc_id     = aws_vpc.MyVPC.id
   cidr_block = var.privateApp1
   availability_zone = "us-east-1a"
   map_public_ip_on_launch = false
@@ -46,7 +46,7 @@ resource "aws_subnet" "privateApp1" {
 }
 
 resource "aws_subnet" "privateApp2" {
-  vpc_id     = aws_vpc.opsVpc.id
+  vpc_id     = aws_vpc.MyVPC.id
   cidr_block = var.privateApp2
   availability_zone = "us-east-1b"
   map_public_ip_on_launch = false
@@ -58,7 +58,7 @@ resource "aws_subnet" "privateApp2" {
 
 # Resource: Private DB Subnets #-----------------------
 resource "aws_subnet" "privateDB1" {
-  vpc_id     = aws_vpc.opsVpc.id
+  vpc_id     = aws_vpc.MyVPC.id
   cidr_block = var.privateDB1
   availability_zone = "us-east-1a"
   map_public_ip_on_launch = false
@@ -69,7 +69,7 @@ resource "aws_subnet" "privateDB1" {
 }
 
 resource "aws_subnet" "privateDB2" {
-  vpc_id     = aws_vpc.opsVpc.id
+  vpc_id     = aws_vpc.MyVPC.id
   cidr_block = var.privateDB2
   availability_zone = "us-east-1b"
   map_public_ip_on_launch = false
@@ -81,16 +81,30 @@ resource "aws_subnet" "privateDB2" {
 
 # Resource: Internet Gateway #-----------------------
 resource "aws_internet_gateway" "IGW" {
-  vpc_id = aws_vpc.opsVpc.id
+  vpc_id = aws_vpc.MyVPC.id
 
   tags = {
     Name = "IGW"
   }
 }
 
-# Resource: Public Route Table #-----------------------
+/* # Resource: Public Route Table #-----------------------
 resource "aws_route_table" "PublicRT" {
-  vpc_id = aws_vpc.opsVpc.id
+  vpc_id = aws_vpc.MyVPC.id
+route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.IGW.id
+  }
+  tags = {
+    Name = "PublicRT"
+  }
+} */
+
+# Resource: Public Route Table #-----------------------
+//ADD p/ teste
+resource "aws_default_route_table" "PublicRT" {
+  default_route_table_id = aws_vpc.MyVPC.default_route_table_id
+
 route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.IGW.id
@@ -99,10 +113,11 @@ route {
     Name = "PublicRT"
   }
 }
+//Ass p/ teste
 
 # Resource: Private Route Table #-----------------------
 resource "aws_route_table" "PrivateRT" {
-  vpc_id = aws_vpc.opsVpc.id
+  vpc_id = aws_vpc.MyVPC.id
 
   tags = {
     Name = "PrivateRT"
@@ -111,7 +126,7 @@ resource "aws_route_table" "PrivateRT" {
 
 # Resource: Private Route Table for RDS #---------------
 resource "aws_route_table" "PrivateRTDB" {
-  vpc_id = aws_vpc.opsVpc.id
+  vpc_id = aws_vpc.MyVPC.id
   tags = {
     Name = "PrivateRTDB"
   }
@@ -150,3 +165,32 @@ resource "aws_route_table_association" "PrivateRTDB2" {
   subnet_id      = aws_subnet.privateDB2.id
   route_table_id = aws_route_table.PrivateRTDB.id
 }
+
+# Security Groups --------------------------------------
+# Create the Security Group
+resource "aws_security_group" "sgSSH" {
+  vpc_id       = aws_vpc.MyVPC.id
+  name         = "sgSSH"
+  description  = "SSH Security Group"
+
+  # allow ingress of port 22
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+  }
+
+  # allow egress of all ports
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "sgSSH"
+    Description = "Allows SSH access"
+  }
+}
+

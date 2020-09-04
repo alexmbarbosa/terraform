@@ -14,9 +14,9 @@ resource "aws_instance" "public" {
   tenancy         = var.tenancy
   instance_type   = var.instance_type
   key_name        = aws_key_pair.ssh_key.id
-  subnet_id       = "subnet-00548348e3e128cd1"
+  subnet_id       = ""
   associate_public_ip_address = true
-  //vpc_security_group_ids = [ aws_security_group.sgSSH.id ]
+  vpc_security_group_ids = [ "" ]
 
   user_data = <<-EOT
     #!/bin/bash
@@ -39,14 +39,3 @@ resource "aws_instance" "public" {
   )
 
 }
-
-/* resource "aws_instance" "private" {
-  count = var.instance_count
-
-  ami = var.ami
-  tenancy = var.tenancy
-  instance_type = var.instance_type
-  associate_public_ip_address = false
-  key_name = aws_key_pair.ssh_key.id
-  vpc_security_group_ids = [ aws_security_group.sgSSH.id ]
-} */
