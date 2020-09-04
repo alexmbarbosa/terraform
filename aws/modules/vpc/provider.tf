@@ -1,0 +1,1 @@
+/home/alex/DevOps/terraform/aws/modules/provider.tf

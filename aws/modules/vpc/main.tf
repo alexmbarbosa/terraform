@@ -1,9 +1,9 @@
 # Resource: VPC #-----------------------------------
 resource "aws_vpc" "MyVPC" {
-  cidr_block       = var.vpc_cidr
-  instance_tenancy = "default"
-  enable_dns_hostnames = true
-  enable_dns_support = true
+  cidr_block            = var.cidr
+  instance_tenancy      = var.instance_tenancy
+  enable_dns_hostnames  = var.enable_dns_hostnames
+  enable_dns_support    = var.enable_dns_support
 
   tags = {
     Name = "MyVPC"
@@ -12,9 +12,9 @@ resource "aws_vpc" "MyVPC" {
 
 # Resource: Public Subnets #-------------------------
 resource "aws_subnet" "public1" {
-  vpc_id     = aws_vpc.MyVPC.id
-  cidr_block = var.public1
-  availability_zone = "us-east-1a"
+  vpc_id                  = aws_vpc.MyVPC.id
+  cidr_block              = var.public1
+  //availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
 
   tags = {
@@ -88,20 +88,9 @@ resource "aws_internet_gateway" "IGW" {
   }
 }
 
-/* # Resource: Public Route Table #-----------------------
-resource "aws_route_table" "PublicRT" {
-  vpc_id = aws_vpc.MyVPC.id
-route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.IGW.id
-  }
-  tags = {
-    Name = "PublicRT"
-  }
-} */
-
-# Resource: Public Route Table #-----------------------
-//ADD p/ teste
+# Resource: Public Route Table (Default) #---------------
+//Changed from aws_route_table to 
+//aws_default_route_table
 resource "aws_default_route_table" "PublicRT" {
   default_route_table_id = aws_vpc.MyVPC.default_route_table_id
 
@@ -113,7 +102,6 @@ route {
     Name = "PublicRT"
   }
 }
-//Ass p/ teste
 
 # Resource: Private Route Table #-----------------------
 resource "aws_route_table" "PrivateRT" {
@@ -135,12 +123,14 @@ resource "aws_route_table" "PrivateRTDB" {
 # Subnets Associations: Public DMZ #--------------------
 resource "aws_route_table_association" "PublicRTA" {
   subnet_id      = aws_subnet.public1.id
-  route_table_id = aws_route_table.PublicRT.id
+ #route_table_id = aws_route_table.PublicRT.id
+  route_table_id = aws_default_route_table.PublicRT.id
 }
 
 resource "aws_route_table_association" "PublicRTB" {
   subnet_id      = aws_subnet.public2.id
-  route_table_id = aws_route_table.PublicRT.id
+ #route_table_id = aws_route_table.PublicRT.id
+  route_table_id = aws_default_route_table.PublicRT.id
 }
 
 # Subnets Associations: Private APP #-------------------
