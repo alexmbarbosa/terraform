@@ -55,7 +55,7 @@ resource "aws_instance" "jenkins-master" {
   provisioner "local-exec" {
     command = <<EOF
 aws --profile ${var.profile} ec2 wait instance-status-ok --region ${var.region-master} --instance-ids ${self.id}
-ansible-playbook -i ansible_templates/inventory_aws/tf.aws_ec2.yml --extra-vars 'passed_in_hosts=tag_Name_jenkins_master_tf' ansible_templates/jenkins-master-sample.yml
+ansible-playbook -i ansible_templates/inventory_aws/tf.aws_ec2.yml --ssh-common-args='-o StrictHostKeyChecking=no' --extra-vars 'passed_in_hosts=tag_Name_jenkins_master_tf' ansible_templates/jenkins-master-sample.yml
 EOF
   }
 }
@@ -79,7 +79,7 @@ resource "aws_instance" "jenkins-worker-oregon" {
   provisioner "local-exec" {
     command = <<EOF
 aws --profile ${var.profile} ec2 wait instance-status-ok --region ${var.region-worker} --instance-ids ${self.id}
-ansible-playbook -i ansible_templates/inventory_aws/tf.aws_ec2.yml --extra-vars  'passed_in_hosts=tag_Name_jenkins_worker_tf_1' ansible_templates/jenkins-worker-sample.yml
+ansible-playbook -i ansible_templates/inventory_aws/tf.aws_ec2.yml --ssh-common-args='-o StrictHostKeyChecking=no' --extra-vars  'passed_in_hosts=tag_Name_jenkins_worker_tf_1' ansible_templates/jenkins-worker-sample.yml
 EOF
   }
 }
