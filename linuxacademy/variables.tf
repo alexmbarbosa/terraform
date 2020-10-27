@@ -33,7 +33,8 @@ variable "webserver-port" {
   default = 80
 }
 
+# You MUST change this variable content every new AWS Playground Environment
 variable "dns-name" {
   type    = string
-  default = "cmcloudlab615.info."
+  default = "cmcloudlab592.info."
 }
