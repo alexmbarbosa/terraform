@@ -20,7 +20,7 @@ variable "type" {
 }
 
 variable "keypair" {
-  default = "zooxnova"
+  default = ""
 }
 
 variable "sg" {
