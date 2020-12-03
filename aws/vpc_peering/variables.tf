@@ -25,11 +25,16 @@ variable "prvDEV2" {
   default = "10.192.13.0/24"
 }
 
-# Private Subnets (DBs)
-variable "DBLayerPrivate1" {
-  default = "10.0.21.0/24"
+# Vars for Peering Connection -----------------------------
+# VPC SRC
+variable "vpc_peer_prd" {
+  default = ""
 }
-
-variable "DBLayerPrivate2" {
-  default = "10.0.22.0/24"
+# VPC DST
+variable "vpc_peer_dev" {
+  default = ""
+}
+# Main Route Table Association (SRC)
+variable "MainRT" {
+  default = ""
 }

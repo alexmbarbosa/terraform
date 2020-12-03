@@ -7,9 +7,9 @@ resource "aws_instance" "ec2_instance" {
   vpc_security_group_ids      = [var.sg, ]
 
   volume_tags = {
-    Name = "zw-zabbix"
+    Name = "dev-data"
   }
   tags = {
-    Name = "zw-zabbix"
+    Name = "dev-data"
   }
 }

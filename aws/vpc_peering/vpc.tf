@@ -92,7 +92,6 @@ resource "aws_route_table" "PrivateRT" {
   }
 }
 
-
 # Subnets Associations: Public DMZ #--------------------
 resource "aws_route_table_association" "PublicRTA" {
   subnet_id      = aws_subnet.pubDEV1.id

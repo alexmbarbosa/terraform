@@ -18,8 +18,17 @@ output "prvDEV1" {
   value       = aws_subnet.prvDEV1.id
 }
 
-
 output "prvDEV2" {
   description = "List of IDs of private subnets"
   value       = aws_subnet.prvDEV2.id
+}
+
+output "connection_id" {
+  value       = aws_vpc_peering_connection.dev-to-prd.id
+  description = "VPC peering connection ID"
+}
+
+output "accept_status" {
+  value       = aws_vpc_peering_connection.dev-to-prd.accept_status
+  description = "The status of the VPC peering connection request"
 }
