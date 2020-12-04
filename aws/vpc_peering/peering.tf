@@ -1,6 +1,7 @@
 resource "aws_vpc_peering_connection" "dev-to-prd" {
-  peer_vpc_id = var.vpc_peer_dev
+  peer_vpc_id = aws_vpc.ZooxDataDEV.id
   vpc_id      = var.vpc_peer_prd
+  auto_accept               = true
 
   accepter {
     allow_remote_vpc_dns_resolution = true
